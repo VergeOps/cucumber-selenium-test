@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>automation-selenium</groupId>
+	<artifactId>cucumber-selenium-test</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+
+  <name>cucumber-selenium-test</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+       <java.version>1.8</java.version>
+       <cucumber.version>4.2.6</cucumber.version>
+       <maven.compiler.version>3.8.0</maven.compiler.version>
+       <test.parallel.count>1</test.parallel.count>
+       <surefire.maven.plugin.version>2.22.1</surefire.maven.plugin.version>
+       <cucumber.report.version>4.5.0</cucumber.report.version>
+   </properties>
+
+	<dependencies>
+	
+		<dependency>
+		    <groupId>io.cucumber</groupId>
+		    <artifactId>cucumber-java</artifactId>
+		    <version>${cucumber.version}</version>
+		</dependency>
+
+        <dependency>
+            <groupId>automation-selenium</groupId>
+            <artifactId>cucumber-selenium-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>${cucumber.version}</version>
+		</dependency>
+        
+        <dependency>
+		    <groupId>net.masterthought</groupId>
+		    <artifactId>cucumber-reporting</artifactId>
+		    <version>4.5.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.javafaker</groupId>
+		    <artifactId>javafaker</artifactId>
+		    <version>0.17.2</version>
+		</dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgument>-Werror</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin> 
+			  <groupId>com.github.temyers</groupId>
+			  <artifactId>cucumber-jvm-parallel-plugin</artifactId>
+			  <version>5.0.0</version>
+			  <executions>
+			    <execution>
+			      <id>generateRunners</id>
+			      <phase>generate-test-sources</phase>
+			      <goals>
+			        <goal>generateRunners</goal>
+			      </goals>
+			      <configuration>
+			          <!-- Mandatory -->
+			         <glue>
+			         	<package>com.automation.selenium.cucumber.steps</package>
+          			</glue>
+			         <!-- These are the default values -->
+			          <!-- Where to output the generated tests -->
+			           <outputDirectory>target/generated-test-sources/cucumber</outputDirectory>
+			           <!-- The diectory, which must be in the root of the runtime classpath, containing your feature files.  -->
+			          <featuresDirectory>src/test/resources/features/</featuresDirectory>
+			           <!-- Directory where the cucumber report files shall be written  -->
+			          <cucumberOutputDir>target/cucumber-parallel</cucumberOutputDir>
+			          <!-- comma separated list of output formats -->
+			         <format>json</format>
+			         <!-- CucumberOptions.strict property -->
+			         <strict>true</strict>
+			         <!-- CucumberOptions.monochrome property -->
+			         <monochrome>true</monochrome>
+			         <!-- The tags to run, maps to CucumberOptions.tags property -->
+			         <tags>not @wip</tags>
+			         <!-- If set to true, only feature files containing the required tags shall be generated. -->
+			         <!-- Excluded tags (~@notMe) are ignored. -->
+			         <filterFeaturesByTags>false</filterFeaturesByTags>
+			         <!-- Generate TestNG runners instead of JUnit ones. --> 
+			         <useTestNG>true</useTestNG>
+			         <!-- The naming scheme to use for the generated test classes.  One of 'simple' or 'feature-title' --> 
+			         <namingScheme>feature-title</namingScheme>
+			      </configuration>
+			    </execution>
+			  </executions>
+			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <forkCount>${test.parallel.count}</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <testFailureIgnore>true</testFailureIgnore>
+                            <includes>
+                                <include>**/*IT.class</include>
+                            </includes>
+                            <properties>
+								<property>
+					              <name>testnames</name>
+					              <value>${test}</value>
+					            </property>
+					            <property>
+									<name>usedefaultlisteners</name>
+									<value>true</value>
+								</property>
+								<parallel>classes</parallel>
+	          					<threadCount>${test.parallel.count}</threadCount>
+							</properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+		        <groupId>net.masterthought</groupId>
+		        <artifactId>maven-cucumber-reporting</artifactId>
+		        <version>${cucumber.report.version}</version>
+		        <executions>
+		          <execution>
+		            <id>execution</id>
+		            <phase>verify</phase>
+		            <goals>
+		              <goal>generate</goal>
+		            </goals>
+		            <configuration>
+		              <projectName>cucumber-selenium-test</projectName>
+		              <outputDirectory>target/site/cucumber-reports</outputDirectory>
+		              <inputDirectory>target/cucumber-parallel</inputDirectory>
+		              <enableFlashCharts>false</enableFlashCharts>
+		              <buildNumber>x</buildNumber>
+		              <jsonFiles>
+                          <param>**/*.json</param>
+                      </jsonFiles>
+                      <parallelTesting>true</parallelTesting>
+                      <checkBuildResult>true</checkBuildResult>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
+        </plugins>
+    </build>
+</project>
