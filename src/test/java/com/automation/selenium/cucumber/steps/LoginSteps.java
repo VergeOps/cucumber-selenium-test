@@ -17,8 +17,8 @@ public class LoginSteps extends StepBase {
 		page.loginWithFailure(getData());
 	}
 	
-	@When("When I login as a valid user")
-	public void loginSuccess(String username, String password) {
+	@When("I login as a valid user")
+	public void loginSuccess() {
 		PracticeLoginPage page = new PracticeLoginPage(getDriver());
 		page.loginSuccessfully(getData());
 	}
