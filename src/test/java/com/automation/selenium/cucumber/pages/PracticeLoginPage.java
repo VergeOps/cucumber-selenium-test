@@ -47,9 +47,4 @@ public class PracticeLoginPage extends BasePage {
 		super(driver);
 	}
 
-	public void loginWithValidCredentials() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
