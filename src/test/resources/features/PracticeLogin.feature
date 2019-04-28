@@ -8,9 +8,9 @@ Feature: Login Page Form Component Checks
     Then I see the error message "<error>"
  
     Examples:
-      | username	| password		| error							|	
-      |				|				| Your username is invalid!		|
-	  | tomsmith	| xxxxx			| Your password is invalid!		|				
+      | username	| password		| error												|	
+      |						|							| Your username is invalid!		|
+	  	| tomsmith	| xxxxx				| Your password is invalid!		|				
    
   @positive
   Scenario: User is logged in successfully when using valid credentials

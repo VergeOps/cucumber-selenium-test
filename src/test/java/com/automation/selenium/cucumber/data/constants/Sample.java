@@ -6,7 +6,7 @@ public enum Sample {
 
 	@JsonProperty("X")
 	X("X"),
-	@JsonProperty("Y")
+	@JsonProperty("Hello my name is bob")
 	CY("Y");
 	
 	private String type; 
